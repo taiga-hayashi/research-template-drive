@@ -40,12 +40,14 @@
 
 | 識別子 | 役割 | 命名 |
 |---|---|---|
-| study | 実験テーマ・保存スキーマ | 内容が分かる小文字英数字とハイフンを推奨。意味が変わる変更は別study |
-| config_hash | 結果に影響する条件 | 正規化した条件から計算するSHA-256。研究ごとに仕様を固定 |
-| run_id | 計算の各試行 | UTC日時と一意suffixを推奨。同条件の再試行も新ID |
-| package_id | 保存パッケージ | 一意。梱包ツールは英数字で開始し、英数字・.・_・-の128文字以内を許容 |
-| analysis_id | 解析・作図の各試行 | UTC日時と一意suffixを推奨。描き直しも新ID |
+| study | 実験テーマ・保存スキーマ | 短い小文字英数字とハイフン、24文字以内を基本とする |
+| config_hash / config_id | 条件の完全hash / フォルダ用の短い別名 | 完全SHA-256を記録し、フォルダはc-＋先頭12桁。対応と衝突を確認 |
+| run_id | 計算の各試行 | r-＋ランダム16進12桁を推奨。同条件の再試行も新ID |
+| package_id | 保存パッケージ | p-＋ランダム16進12桁を推奨。新規梱包は24文字以内 |
+| analysis_id | 解析・作図の各試行 | a-＋ランダム16進12桁を推奨。描き直しも新ID |
 | task_id | 作業の引継ぎ | 内容が分かる名前。同じ作業は既存の記録を更新 |
+
+新規フォルダは1要素24文字以内を基本とし、詳しい条件と日時はREADME・設定・索引へ残す。[短い命名ルール](NAMING.md)に従う。
 
 run/package/analysisのIDを自動発行する処理とconfig_hashの生成処理は未実装。latestやfinal2だけで版を判別せず、索引で最新版と前の版の対応を示す。既存のseed=、cfg-等の階層は維持する。
 
@@ -54,7 +56,7 @@ run/package/analysisのIDを自動発行する処理とconfig_hashの生成処�
 ## 生成時だけ現れるフォルダ
 
 - `data_root/_packages/<package_id>/`: fetchの復元コピー。元の相対パスを保持し、既存runへ上書きしない。
-- `cache_root/packages/<sha256>/`: 再利用可能な取得アーカイブ。cache_rootはDrive外。
+- `cache_root/packages/<sha256の先頭16桁>/`: 再利用可能な取得アーカイブ。cache_rootはDrive外。
 - `raw/`・`checkpoints/`・`logs/`: 各runの生データ・再開情報・実行記録。
 - `csv/`・`png/`・`pdf/`・各`panels/`: 各解析の集計と図。PNG/PDFの対応を維持する。
 - `code_snapshot/`・`records/`: パッケージに固定した実行時ソースと記録。編集用の共通コードと区別する。

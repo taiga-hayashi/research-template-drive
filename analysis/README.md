@@ -14,6 +14,8 @@ study/analysis_idごとのREADME、analysis_config.json、CSV、PNG/PDF、図設
 
 ## ルール
 
+新規フォルダは24文字以内を基本とし、短いIDを使う。条件・日時はREADMEと索引に記録する。
+
 <study>/<analysis_id>/へ保存し、描き直しは新しいanalysis_idにする。入力run/package・checksum・コード版・集計条件を記録する。PNG/PDFを同名にし、必要な各パネルは独立描画する。端末のoutput_rootとDrive保存先を区別する。
 
 ## 配置・利用例

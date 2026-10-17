@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "study": "REPLACE_STUDY",
-  "package_id": "REPLACE_UNIQUE_PACKAGE_ID",
+  "package_id": "REPLACE_PACKAGE_ID",
   "run_ids": [
     "REPLACE_RUN_ID"
   ],
@@ -11,7 +11,7 @@
   "sources": [
     {
       "source": "/absolute/path/to/frozen/run_001",
-      "target": "data/runs/REPLACE_STUDY/REPLACE_CONFIG_HASH/REPLACE_RUN_ID"
+      "target": "data/runs/REPLACE_STUDY/REPLACE_CONFIG_ID/REPLACE_RUN_ID"
     },
     {
       "source": "/absolute/path/to/execution-code-snapshot",
@@ -23,7 +23,7 @@
     }
   ],
   "required_paths": [
-    "data/runs/REPLACE_STUDY/REPLACE_CONFIG_HASH/REPLACE_RUN_ID",
+    "data/runs/REPLACE_STUDY/REPLACE_CONFIG_ID/REPLACE_RUN_ID",
     "code_snapshot",
     "records/run-record.md"
   ]

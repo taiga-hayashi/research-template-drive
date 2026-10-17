@@ -20,7 +20,7 @@ inputs/、runs/、fetchが生成する_packages/。
 
 ```text
 inputs/
-runs/<study>/<config_hash>/<run_id>/
+runs/<study>/<config_id>/<run_id>/
 _packages/<package_id>/     # fetchが生成
 ```
 

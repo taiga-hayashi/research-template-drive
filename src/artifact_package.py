@@ -36,9 +36,9 @@ def safe_name(value):
     return p.as_posix()
 
 
-def identifier(value):
-    if not isinstance(value, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,127}', value):
-        raise ValueError('IDには英数字と . _ - を使ってください（128文字以内）')
+def identifier(value, max_length=128):
+    if not isinstance(value, str) or not re.fullmatch(rf'[A-Za-z0-9][A-Za-z0-9._-]{{0,{max_length - 1}}}', value):
+        raise ValueError(f'IDには英数字と . _ - を使ってください（{max_length}文字以内）')
     if value.startswith('REPLACE_'):
         raise ValueError('IDの例を実際の値に変更してください')
     return value
@@ -76,7 +76,7 @@ def stamp(path):
 def plan_package(spec):
     if spec.get('schema_version') != 1:
         raise ValueError('対応していない梱包仕様です')
-    identifier(spec['package_id'])
+    identifier(spec['package_id'], max_length=24)
     if spec.get('compute_status') not in {'partial', 'failed', 'complete'}:
         raise ValueError('compute_statusはpartial / failed / completeを明記してください')
     if (not isinstance(spec.get('run_ids'), list) or not spec['run_ids']
@@ -300,7 +300,8 @@ def fetch(request, paths, archive_only=False):
     results = []
     for row, digest, source, destination in plans:
         try:
-            cache = paths.cache_root / 'packages' / digest
+            legacy_cache = paths.cache_root / 'packages' / digest
+            cache = legacy_cache if (legacy_cache / 'artifact.archive').is_file() else paths.cache_root / 'packages' / digest[:16]
             cache.mkdir(parents=True, exist_ok=True)
             archive_path = cache / 'artifact.archive'
             if archive_path.exists() and sha256_file(archive_path) != digest:

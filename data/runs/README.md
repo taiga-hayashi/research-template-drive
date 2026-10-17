@@ -14,12 +14,12 @@ config.json、metadata.json、raw/、checkpoints/、logs/、status.json。
 
 ## ルール
 
-<study>/<config_hash>/<run_id>/。同条件の再試行も別run_idにし、条件hashの仕様を固定する。継続再開は整合性と二重起動防止を確認する。失敗・部分完了も残し、計算・検証・保存を別管理する。
+<study>/<config_id>/<run_id>/。同条件の再試行も別run_idにし、条件hashの仕様を固定する。フォルダは短いconfig_idを使い、完全なconfig_hashとの対応を記録する。継続再開は整合性と二重起動防止を確認する。失敗・部分完了も残し、計算・検証・保存を別管理する。
 
 ## 配置・利用例
 
 ```text
-<study>/<config_hash>/<run_id>/
+<study>/<config_id>/<run_id>/
   config.json
   metadata.json
   raw/

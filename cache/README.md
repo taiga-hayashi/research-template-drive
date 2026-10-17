@@ -19,7 +19,7 @@
 ## 配置・利用例
 
 ```text
-cache_root/packages/<sha256>/artifact.archive
+cache_root/packages/<sha256の先頭16桁>/artifact.archive
 # このREADMEは説明用。実データは端末別cache_rootへ
 ```
 

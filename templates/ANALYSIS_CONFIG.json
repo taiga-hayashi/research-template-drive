@@ -1,14 +1,14 @@
 {
   "schema_version": 2,
   "study": "REPLACE_STUDY",
-  "analysis_id": "REPLACE_UNIQUE_ANALYSIS_ID",
+  "analysis_id": "REPLACE_ANALYSIS_ID",
   "inputs": [
     {
       "run_id": "REPLACE_RUN_ID",
       "config_hash": "REPLACE_CONFIG_HASH",
       "result_package_id": "REPLACE_RESULT_PACKAGE_ID",
       "checkpoint_package_id": null,
-      "relative_path": "runs/REPLACE_STUDY/REPLACE_CONFIG_HASH/REPLACE_RUN_ID",
+      "relative_path": "runs/REPLACE_STUDY/REPLACE_CONFIG_ID/REPLACE_RUN_ID",
       "drive_url": "REPLACE_DRIVE_URL",
       "archive_sha256": "REPLACE_SHA256",
       "model": "REPLACE_MODEL",
@@ -16,7 +16,8 @@
       "code_version": "REPLACE_CODE_VERSION",
       "checkpoint_relative_path": null,
       "checkpoint_drive_url": null,
-      "checkpoint_archive_sha256": null
+      "checkpoint_archive_sha256": null,
+      "config_id": "REPLACE_CONFIG_ID"
     }
   ],
   "selection": {

@@ -119,6 +119,48 @@ class ArtifactPackageTests(unittest.TestCase):
         self.assertTrue((self.paths.data_root / '_packages/toy-001').is_dir())
         self.assertFalse((self.paths.data_root / '_packages/toy-002').exists())
 
+    def test_new_package_ids_have_24_character_limit(self):
+        spec = copy.deepcopy(self.spec)
+        spec['package_id'] = 'p-' + 'a'*22
+        self.assertEqual(package_plan(spec)['package_id'], spec['package_id'])
+        spec['package_id'] += 'b'
+        with self.assertRaisesRegex(ValueError, '24'):
+            pack(spec, self.output)
+        self.assertFalse(self.output.exists())
+
+    def test_short_cache_names_keep_full_checksum_and_read_legacy_ids(self):
+        legacy = self.root / 'legacy.tar'
+        legacy.write_bytes(b'opaque legacy payload')
+        digest = sha256_file(legacy)
+        request = self.request(legacy, digest)
+        request['packages'][0]['package_id'] = 'legacy-' + 'a'*30
+        result = fetch(request, self.paths, archive_only=True)[0]
+        self.assertEqual(Path(result['archive_path']).parent.name, digest[:16])
+        self.assertEqual(result['archive_sha256'], digest)
+
+    def test_short_cache_collision_does_not_reuse_or_overwrite_other_bytes(self):
+        source = self.root / 'source.tar'
+        source.write_bytes(b'expected archive')
+        digest = sha256_file(source)
+        cached = self.paths.cache_root / 'packages' / digest[:16] / 'artifact.archive'
+        cached.parent.mkdir(parents=True)
+        cached.write_bytes(b'other archive or corrupted bytes')
+        with self.assertRaises(ValueError):
+            fetch(self.request(source, digest), self.paths, archive_only=True)
+        self.assertEqual(cached.read_bytes(), b'other archive or corrupted bytes')
+
+    def test_existing_full_hash_cache_is_reused_without_renaming(self):
+        report = pack(self.spec, self.output)
+        digest = report['archive_sha256']
+        legacy_cache = self.paths.cache_root / 'packages' / digest
+        legacy_cache.mkdir(parents=True)
+        shutil.copyfile(self.output / 'artifacts.zip', legacy_cache / 'artifact.archive')
+        request = self.request(self.root / 'not-downloaded-again.zip', digest)
+        result = fetch(request, self.paths)[0]
+        self.assertEqual(Path(result['archive_path']).parent, legacy_cache)
+        self.assertTrue(result['internal_manifest_verified'])
+        self.assertTrue(legacy_cache.is_dir())
+
     def test_symlinks_are_rejected(self):
         (self.source / 'link.csv').symlink_to(self.code / 'run.py')
         with self.assertRaises(ValueError):

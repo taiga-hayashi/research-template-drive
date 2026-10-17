@@ -35,7 +35,7 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
     md/
   analysis/compare/          # 複数実験比較
   data/inputs/               # 外部入力（出典・版・checksum）
-  data/runs/<study>/<config_hash>/<run_id>/
+  data/runs/<study>/<config_id>/<run_id>/
     config.json
     metadata.json
     raw/                     # JSON/CSV/NPZなど既存の形式を使用
@@ -93,7 +93,8 @@ DriveのREADMEにはstudy、条件hash、run ID、package ID、状態、保存�
   問題・入力データのchecksum、encoding、手法、seed、評価予算、学習条件、探索条件、backend、数値精度、
   結果に影響するコード版を含める。日時や保存先だけの変更で条件hashを変えない。
   同じ条件の再試行も別のrun_idで保存し、成功・失敗を上書きしない。
-- run_id: UTC日時（秒以上）と一意suffix。package_idも同様に一意にする。
+- config_id: フォルダ用の短い条件ID。完全なconfig_hashとの対応を索引に記録する。
+- run_id / package_id / analysis_id: 短いIDを使い、日時や条件を名前に連結しない。[NAMING.md](NAMING.md)に従い、重複を確認する。
 - metadata.json: 実行コマンド、開始終了日時、環境・依存版、Git commitとdirty状態
   （Gitがない場合はコードsnapshotのchecksum）、入力参照、実行状態を記録する。dirtyの場合も実行時ソースまたは復元可能な差分を保存する。
 - analysis_id: 解析試行ごとの一意ID。入力run/package・checksum、選択・除外・集計条件、解析コード版、再現コマンドをanalysis_config.jsonとREADMEに記録する。出力先はanalysis/<study>/<analysis_id>/とし、再実行は新IDにする。

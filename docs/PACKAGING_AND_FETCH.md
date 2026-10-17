@@ -12,7 +12,7 @@
 
 | 必要な対象 | 梱包先の例 | 確認すること |
 |---|---|---|
-| 生データ・history・samples・ログ | `data/runs/<study>/<config_hash>/<run_id>/` | 完了範囲・seed・モデル・評価回数 |
+| 生データ・history・samples・ログ | `data/runs/<study>/<config_id>/<run_id>/` | 完了範囲・seed・モデル・評価回数 |
 | 再開に必要なcheckpoint | 同じrunの下、または既存の対応階層 | checksum・cycle・結果との対応 |
 | 実行時ソース・描画コード | `code_snapshot/` | 現在の最新版ではなく実行した版。dirty変更も含む |
 | 設定・seed・依存定義・入力参照 | 元のrun内、または`records/` | 大規模入力を省略する場合はDrive参照・版・checksum |
@@ -27,7 +27,7 @@
 
 [PACKAGE_SPEC.json](../templates/PACKAGE_SPEC.json)を`config/package.local.json`へコピーする。sourceにはそのサーバーでの絶対パス、targetにはZIP内の相対パスを書く。複数のsourceを対応する論理パスへ集められる。required_pathsに必須ファイルまたはフォルダを列挙する。
 
-- package_idは毎回一意にし、同じ保存先を使い回さない。
+- package_idはp-＋ランダム16進12桁等の短いIDにし、新規梱包は24文字以内。重複を確認し、同じ保存先を使い回さない。
 - study・run_ids・code_version・compute_statusを実データに合わせる。
 - snapshot_confirmedは保存範囲が凍結されていることを確認してからtrueにする。
 - 必須のコード・設定・ログ・checkpointを指定したか、人が仕様と対象一覧を確認する。ツールは実験固有の必要ファイルや計算の正しさを自動判定しない。
@@ -103,7 +103,7 @@ python3 scripts/artifacts.py fetch --request config/downloads.local.json \
 5. 取得・検証結果と実際の保存先をJSONで標準出力へ報告する。必要ならローカルの作業記録へ保存する。
 
 ```text
-cache_root/packages/<sha256>/artifact.archive
+cache_root/packages/<sha256の先頭16桁>/artifact.archive
 
 data_root/_packages/<package_id>/
   manifest.json
@@ -114,7 +114,7 @@ data_root/_packages/<package_id>/
 
 復元は専用の新規フォルダへ行い、既存のdata/runsやPestControlの階層には書き戻さない。analysis_config.jsonのrelative_pathには`_packages/<package_id>/data/runs/...`を指定する。既存階層のパッケージなら`_packages/<package_id>/01_results/...`となる。fetch結果のpayload_data_rootは標準のdata/配下の便宜的な場所であり、旧階層にdata/がない場合は存在を仮定しない。
 
-同じchecksumのキャッシュは毎回SHA-256を再検証して利用する。既存の展開先がある場合は上書きせず停止する。やり直す場合は、元の展開データを確認したうえで別のdata_rootを指定する。複数packageは順番に処理し、途中で失敗した場合も先に正常復元したpackageは保持し、completed_packagesとして報告する。再試行時は成功済みのpackageを取得指定から外す。索引・状態の更新や原本削除は自動では行わない。
+キャッシュのフォルダ名はSHA-256の先頭16桁とし、同じchecksumのキャッシュは毎回完全SHA-256を再検証して利用する。既存の展開先がある場合は上書きせず停止する。やり直す場合は、元の展開データを確認したうえで別のdata_rootを指定する。複数packageは順番に処理し、途中で失敗した場合も先に正常復元したpackageは保持し、completed_packagesとして報告する。再試行時は成功済みのpackageを取得指定から外す。索引・状態の更新や原本削除は自動では行わない。
 
 rclone以外で既にダウンロード済みの場合はsource.kindをlocal、source.pathをローカル絶対パスにすれば、同じ検証・展開を行える。localによる取得はクラウドからの再取得検証ではない。
 

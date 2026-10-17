@@ -33,3 +33,5 @@
 - 図はdocs/FIGURE_POLICY.mdと研究の共通設定に従う。集計単位・不確実性・評価軸・checkpoint位置を記録する。
 
 - サーバーでの保存対象指定と取得・復元はdocs/PACKAGING_AND_FETCH.mdに従う。pack前にdry-runで対象を確認し、凍結snapshotから梱包する。fetchは必要なpackageと信頼できるSHA-256を指定し、既存runへ上書き展開しない。
+
+- 新規フォルダ名はdocs/NAMING.mdに従い1要素24文字以内を基本とする。条件・日時・seed・コード版を名前へ詰め込まず、短いIDと完全hashの対応を記録する。既存フォルダや保存済みIDを自動改名しない。
