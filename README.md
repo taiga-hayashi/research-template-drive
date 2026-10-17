@@ -14,6 +14,8 @@ Google Driveを正式保存先として、実験・解析・研究記録を再�
 6. Macまたはサーバーで必要データを取得・検証し、同じ解析コードと[解析設定](templates/ANALYSIS_CONFIG.json)を使います。端末ごとに切り替えるのは保存先設定です。
 7. 新しいanalysis_idへ図・CSV・[解析記録](templates/ANALYSIS_README.md)を保存し、Drive保存検証後に解析索引を更新します。
 
+Pythonは各端末のDrive外にある既存のローカル仮想環境で実行します。Macとサーバーで環境本体を共有せず、依存定義と実際のPython・ライブラリ版を記録します。Drive内に`.venv`を作成しません。
+
 詳しい手順とPestControlの既存配置への対応は[DRIVE_WORKFLOW.md](docs/DRIVE_WORKFLOW.md)を参照してください。
 
 ## 構成
