@@ -9,7 +9,7 @@ Google Driveを正式保存先として、実験・解析・研究記録を再�
 1. GitHubの「Use this template」または「Code → Download ZIP」でコピーします。
 2. READMEに研究目的、DriveフォルダURL、コードの所在、環境構築方法を記録します。
 3. AGENTS.mdとdocs/RESEARCH_LAYOUT.mdを読み、研究固有の条件・完了基準を追記します。
-4. experiments/<study>/に実験を作り、docs/experiments-io.mdに入出力を記録します。
+4. `experiments/<study>/`に実験を作り、docs/experiments-io.mdに入出力を記録します。
 5. 計算結果を検証し、Driveに実験単位のartifacts.zipとREADME・summary.csv・overview.pdfを保存します。
 
 ## 構成
