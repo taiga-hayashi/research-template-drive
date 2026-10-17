@@ -21,8 +21,10 @@ archive/**
 !archive/**/*.dvc
 cache/**
 !cache/.gitkeep
+!cache/README.md
 tmp/**
 !tmp/.gitkeep
+!tmp/README.md
 
 # 端末固有の保存先（共有例は追跡）
 /config/*.local.json

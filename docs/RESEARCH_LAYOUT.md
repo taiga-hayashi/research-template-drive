@@ -15,6 +15,8 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
 
 ## 作業領域の標準構成
 
+各フォルダの具体的な役割・配置・命名・READMEのルールは[FOLDER_GUIDE.md](FOLDER_GUIDE.md)を参照する。
+
 計算は研究室サーバー、解析はMacまたはサーバーで行う。正式保存先はDrive。端末別保存先、直接アップロード、解析入力の取得・展開、索引は[DRIVE_WORKFLOW.md](DRIVE_WORKFLOW.md)に従う。GitHubへの研究用リポジトリ作成は任意。
 
 ```text

@@ -2,6 +2,7 @@
 
 この研究の共通管理ルール。最初にREADME.md、docs/DRIVE_WORKFLOW.md、docs/RESEARCH_LAYOUT.mdを読み、対象実験に必要な仕様だけ参照する。.context/INDEX.mdと.context/core/project.mdを確認し、既存のactive作業記録を引き継ぐ。
 
+- 配置先を決める前にdocs/FOLDER_GUIDE.mdと対象フォルダのREADME.mdを読み、役割と既存の研究固有ルールを確認する。新しいstudy・run・解析・保存先にも目的・入出力・版・検証状態のREADMEを残す。
 - 新規研究はsrc/、experiments/、data/runs/、analysis/、docs/、notes/を役割別に分ける。既存コードの共通機能を再利用する。
 - 1実験1study。結果に影響する条件をconfig_hashで識別し、一意なrun_idで各試行を保存する。既存結果を上書きしない。
 - 入力、設定、seed、実行コード版、コマンド、環境、ログ、必要なcheckpointを記録し、失敗・未完了も残す。

@@ -1,0 +1,26 @@
+# analysis/compare/ — 複数studyの比較解析
+
+## 役割
+
+複数の実験・問題設定を横断する比較結果を保存する。
+
+## 置くもの
+
+comparison_id/analysis_idごとの入力一覧、比較条件表、CSV、図、解釈。
+
+## 置かないもの
+
+各studyの生データのコピー、条件が揃っていないものを無説明に混ぜた比較。
+
+## ルール
+
+<comparison_id>/<analysis_id>/で分け、対象study・モデル・seed・評価予算・相違点を記録する。共通範囲と未測定範囲を示し、以前の比較結果を上書きしない。
+
+## 配置・利用例
+
+```text
+<comparison_id>/<analysis_id>/README.md
+<comparison_id>/<analysis_id>/{csv,png,pdf}/
+```
+
+[全フォルダの案内](../../docs/FOLDER_GUIDE.md)を参照する。実際の研究固有ルールはAGENTS.mdと対象studyの仕様に従う。
