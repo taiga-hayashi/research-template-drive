@@ -1,11 +1,11 @@
 # AGENTS.md
 
-この研究の共通管理ルール。最初にREADME.md、docs/DRIVE_WORKFLOW.md、docs/RESEARCH_LAYOUT.mdを読み、対象実験に必要な仕様だけ参照する。
+この研究の共通管理ルール。最初にREADME.md、docs/DRIVE_WORKFLOW.md、docs/RESEARCH_LAYOUT.mdを読み、対象実験に必要な仕様だけ参照する。.context/INDEX.mdとcore/project.mdを確認し、既存のactive作業記録を引き継ぐ。
 
 - 新規研究はsrc/、experiments/、data/runs/、analysis/、docs/、notes/を役割別に分ける。既存コードの共通機能を再利用する。
 - 1実験1study。結果に影響する条件をconfig_hashで識別し、一意なrun_idで各試行を保存する。既存結果を上書きしない。
 - 入力、設定、seed、実行コード版、コマンド、環境、ログ、必要なcheckpointを記録し、失敗・未完了も残す。
-- completeは実験固有の検証後に記録する。出力ファイルや図の存在だけで完了としない。
+- 計算・結果検証・パッケージ検証・Drive保存・解析を別々に記録する。compute_status=completeだけで研究全体を完了としない。overall_statusはdocs/STATUS_AND_JOBS.mdの基準に従う。
 - 公平な比較では問題・入力・seed・初期データ・評価予算等を揃える。差異を記録し、未測定値や結果を捏造しない。
 - 図はPNG/PDFを同名・対応する相対パスで保存し、必要な個別パネルも独立描画して保持する。SVG等の追加要件も維持する。
 - 計算は研究室サーバー、解析はMacまたはサーバーで行う。Driveを正式保存先とし、Macの同期フォルダも利用する。GitHub・DVC導入は任意。
@@ -25,3 +25,8 @@
 - GitやDVC等は導入済みの環境に従う。DVC・ジョブ管理ツールを前提にしない。外部公開・Git push・認証設定は依頼された範囲に従う。
 - 新規実験の公平性・完了条件・測定限界はプロジェクト固有ルールとして追加する。過去プロジェクト固有の数値条件を無条件に流用しない。
 
+
+- 長時間計算はtemplates/JOB_RECORD.jsonへジョブID・依存・ログ・資源・checkpoint・再開手順を記録する。投入済みを計算結果と扱わない。
+- 複数段階の作業は.context/work/active/で実施済み・根拠・固定条件・未確認・次の手順を更新する。AGENTS.mdへ作業履歴を蓄積しない。
+- 比較条件と探索/確認/診断の区分はdocs/RESEARCH_PROTOCOL.mdに従う。探索後の確認では条件を固定し、独立性を確認する。
+- 図はdocs/FIGURE_POLICY.mdと研究の共通設定に従う。集計単位・不確実性・評価軸・checkpoint位置を記録する。

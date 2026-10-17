@@ -11,7 +11,11 @@
 - 実行場所（mac / server）・開始終了日時・実際の入出力先:
 - 再現コマンド・依存関係ファイル:
 - 設定ファイル: analysis_config.json
-- 計算状態: pending / running / failed / complete
+- 計算状態: pending / queued / running / partial / failed / complete
+- 出力検証状態: pending / running / passed / failed / unverified
+- 検証根拠への参照・全体の完了状態:
+- protocolのphase・版・比較条件表:
+- job_record.json・共通図設定とsnapshotへの参照:
 - 出力検証（CSV整合性・PNG/PDF対応・独立パネル・表示確認）:
 - Drive保存先・保存検証状態: pending / unverified / verified / failed
 - 観測結果:

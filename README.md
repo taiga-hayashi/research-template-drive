@@ -18,6 +18,15 @@ Pythonは各端末のDrive外にある既存のローカル仮想環境で実行
 
 詳しい手順とPestControlの既存配置への対応は[DRIVE_WORKFLOW.md](docs/DRIVE_WORKFLOW.md)を参照してください。
 
+## 作業を引き継ぎ、完了を判断する
+
+- [状態・ジョブ・再開手順](docs/STATUS_AND_JOBS.md): 計算、検証、Drive保存、解析を別管理
+- [AIへの引継ぎ](.context/INDEX.md): 固定条件、実施済みと根拠、未確認、次の手順
+- [比較・探索・確認実験](docs/RESEARCH_PROTOCOL.md): 比較条件表と事前固定するprotocol
+- [図の共通設定](docs/FIGURE_POLICY.md): モデル色、PNG/PDFと独立パネル、集計・評価軸
+
+これらは記録用の雛形と運用ルールです。自動ジョブ投入・監視・再開・検証や作図への自動適用は実装していません。
+
 ## 構成
 
 |場所|役割|
@@ -26,7 +35,8 @@ Pythonは各端末のDrive外にある既存のローカル仮想環境で実行
 |experiments/|実験固有のコード・設定|
 |data/inputs/、data/runs/|入力・生データ・checkpoint（Git管理外）|
 |analysis/|`<study>/<analysis_id>/`ごとの解析結果。PNG/PDFと独立パネルを保持|
-|config/|端末別の保存先設定例。個人設定はGit管理外|
+|config/|端末別の保存先設定例と研究の共通図設定。個人設定はGit管理外|
+|.context/|研究固有の基本情報と作業引継ぎ|
 |docs/|管理ガイド・入出力仕様・判断ログ|
 |notes/|日付単位の研究ノート|
 |refs/|参考文献・書誌情報|

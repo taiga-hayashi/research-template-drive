@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "model_styles": {},
+  "formats": [
+    "png",
+    "pdf"
+  ],
+  "independent_panels": true,
+  "show_title": false,
+  "show_bottom_annotation": false,
+  "aggregation": {
+    "unit": null,
+    "center": null,
+    "uncertainty": null
+  },
+  "evaluation_axis": {
+    "quantity": null,
+    "unit": null,
+    "cycle_to_evaluations": null
+  },
+  "checkpoint_selection": null,
+  "highlight_meaning": null
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "study": "REPLACE_STUDY",
+  "config_hash": "REPLACE_CONFIG_HASH",
+  "run_id": "REPLACE_RUN_ID",
+  "scope": {
+    "expected_runs": null,
+    "completed_runs": null,
+    "expected_evaluations": null,
+    "completed_evaluations": null,
+    "completed_range": null
+  },
+  "compute_status": "pending",
+  "validation_status": "pending",
+  "package_validation_status": "pending",
+  "storage_status": "pending",
+  "analysis_status": "pending",
+  "overall_status": "pending",
+  "job_record_path": null,
+  "analysis_ids": [],
+  "verification_evidence": [],
+  "not_required_reasons": {},
+  "updated_at_utc": null
+}

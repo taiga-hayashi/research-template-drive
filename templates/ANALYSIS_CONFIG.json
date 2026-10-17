@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "study": "REPLACE_STUDY",
   "analysis_id": "REPLACE_UNIQUE_ANALYSIS_ID",
   "inputs": [
@@ -24,7 +24,8 @@
     "seeds": [],
     "evaluation_budget": null,
     "include_failed_runs": true,
-    "exclusions": []
+    "exclusions": [],
+    "checkpoint_or_evaluation": null
   },
   "aggregation": {
     "unit": null,
@@ -38,5 +39,18 @@
     "source_snapshot_sha256": null
   },
   "command": null,
-  "environment_file": null
+  "environment_file": null,
+  "protocol": {
+    "phase": null,
+    "path": null,
+    "sha256": null,
+    "comparison_checklist_path": null
+  },
+  "figure_config": {
+    "path": "config/figures.json",
+    "sha256": null,
+    "snapshot_path": null,
+    "overrides": {}
+  },
+  "job_record_path": null
 }

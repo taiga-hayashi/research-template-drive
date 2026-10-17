@@ -2,7 +2,11 @@
 
 - study / config_hash / run_id一覧:
 - package_id / 対象（結果 / checkpoint / 両方）:
-- 計算状態: partial / failed / complete
+- 計算状態: pending / queued / running / partial / failed / complete
+- 結果検証状態と根拠: pending / running / passed / failed / unverified
+- 関連解析の状態とanalysis_id:
+- 全体の完了状態: pending / in_progress / failed / complete
+- protocolのphase・版・比較条件表・job_record.jsonへの参照:
 - 含むseed・モデル・完了チャンク・checkpoint位置:
 - 結果とcheckpointが別保存の場合の対応package_id・Driveリンク:
 - 実行コード版・実行時snapshot・dirty差分のSHA-256:
@@ -15,7 +19,7 @@
 - 主要結果と測定限界:
 - 検証済みの完了基準:
 - アーカイブ形式・ファイル名・サイズ・SHA-256:
-- 内部manifestの検証結果:
+- パッケージ検証状態と内部manifestの検証結果: pending / passed / failed / unverified
 - Drive保存先:
 - クラウド保存検証状態: pending / unverified / verified / failed
 - 検証日時・クラウド上のサイズ・checksum照合方法と結果:

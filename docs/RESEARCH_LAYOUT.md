@@ -1,4 +1,4 @@
-# Google Drive研究フォルダ標準 v1.2
+# Google Drive研究フォルダ標準 v1.3
 作成日: 2026-10-17
 更新日: 2026-10-17（サーバー計算・Mac/サーバー解析・Drive直接保存に対応）
 
@@ -95,8 +95,8 @@ DriveのREADMEにはstudy、条件hash、run ID、package ID、状態、保存�
 - metadata.json: 実行コマンド、開始終了日時、環境・依存版、Git commitとdirty状態
   （Gitがない場合はコードsnapshotのchecksum）、入力参照、実行状態を記録する。dirtyの場合も実行時ソースまたは復元可能な差分を保存する。
 - analysis_id: 解析試行ごとの一意ID。入力run/package・checksum、選択・除外・集計条件、解析コード版、再現コマンドをanalysis_config.jsonとREADMEに記録する。出力先はanalysis/<study>/<analysis_id>/とし、再実行は新IDにする。
-- status.json: running/partial/failed/completeと検証内容を記録。
-  raw結果の整合性・必要seed/件数・軌跡長・必須再現用ファイルを検証してからcompleteを記録する。
+- status.json: [RUN_STATUS.json](../templates/RUN_STATUS.json)を使い、計算・結果検証・パッケージ検証・Drive保存・解析・全体の状態を別々に記録する。
+  raw結果の整合性・必要seed/件数・軌跡長・必須再現用ファイルを検証し、必要な保存と解析も確認してからoverall_status=completeを記録する。
   結果は一時ファイルからの確定書き込みを使い、図の更新やoutputファイルの存在だけで完了扱いにしない。
 - 失敗・未完了runも記録して比較対象の範囲を明示する。未測定値を補完・捏造しない。
 
@@ -136,3 +136,7 @@ GitHubへのpushや公開、認証設定は別の明示的な依頼に従う。
 PestControlの.context/INDEX.mdと既存の問題別分類・fairness基準を優先する。
 新規標準を使うために既存の実験定義・seed・予算・数値条件を変更しない。
 
+
+## 作業・比較・図の詳細
+
+[状態とジョブ](STATUS_AND_JOBS.md)、[比較と確認実験](RESEARCH_PROTOCOL.md)、[図の設定](FIGURE_POLICY.md)、[引継ぎ](../.context/INDEX.md)を必要な作業だけ参照する。研究固有の予算・seed数・検定をテンプレートから一律に課さない。

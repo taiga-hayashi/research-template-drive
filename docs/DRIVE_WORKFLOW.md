@@ -61,17 +61,23 @@ DriveでREADME・主要指標CSV・代表図PDFを直接読めるようにし、
 3. `templates/ANALYSIS_CONFIG.json`と`templates/ANALYSIS_README.md`を使い、新しいanalysis_idの解析記録を作る。入力run/package・相対パス・checksum、使用モデル・seed・予算・除外理由・集計条件を確定する。テンプレートの未記入値は実行前に埋める。
 4. 同じ解析コード版と設定を用意し、端末に応じたpaths.local.jsonのprofileだけを切り替える。再現コマンド、実際の入出力先、環境・ライブラリ版も記録する。
 5. `output_root/<study>/<analysis_id>/`へREADME、analysis_config.json、csv/、png/、pdf/を生成する。解析コードはsrc/またはscripts/等で共有し、解析結果フォルダごとに実装を複製しない。実行時snapshotは再現用に保存できる。
-6. PNG/PDFと必要な独立パネル、CSV整合性、図の表示を検証する。完了判定後に計算状態をcompleteにする。
+6. PNG/PDFと必要な独立パネル、CSV整合性、図の表示を検証する。解析実行の終了をcompute_status、検証結果をvalidation_statusへ別々に記録する。全体の完了は必要な保存検証後に判定する。
 7. MacでDrive内へ直接出力した場合は同期後にクラウド保存を検証する。サーバーで生成した場合はDriveの対応する解析先へアップロードして検証する。大量ファイルは解析単位のアーカイブも使い、閲覧用ファイルは外に置く。
 8. `docs/analysis-index.csv`に入力一覧への参照、実行場所、解析状態、Drive保存検証を記録する。再実行には新しいanalysis_idを付け、前の解析への参照を残す。未完了・失敗も残す。
 
 同じstudy・入力・設定の再解析でもMacとサーバーで同じ出力先を使い回さない。analysis_idはUTC日時と一意suffix等で発行する。run_idは計算試行、package_idは保存単位、analysis_idは解析試行であり、互いに代用しない。
 
+## 長時間計算・引継ぎ・比較と図
+
+[状態とジョブ再開](STATUS_AND_JOBS.md)に従い、ジョブID・依存・checkpoint・再開手順を残す。計算が終わっても、結果検証・Drive保存・必要な解析が残っていれば明示する。[引継ぎファイル](../.context/INDEX.md)へ固定条件・実施済みと根拠・未確認・次の手順を記録する。
+
+比較前に[条件表とprotocol](RESEARCH_PROTOCOL.md)を記入し、探索・確認・診断を区別する。図は[共通設定](FIGURE_POLICY.md)を参照し、実際に使った設定を解析結果へ保存する。
+
 ## 索引の使い方
 
 `templates/EXPERIMENT_INDEX.csv`を`docs/experiment-index.csv`へ、`templates/ANALYSIS_INDEX.csv`を`docs/analysis-index.csv`へコピーして使う。実験索引はモデル・seedを含む各runを1行とする。既存run名を変える必要はなく、他の条件列と組み合わせて一意に識別する。同じrunに複数チャンクがある場合はpackageごとに行を追加し、保存済み範囲をnotesに記録する。
 
-解析索引はanalysis_idごとに1行とし、複数入力はinput_manifest_pathでanalysis_config.jsonを参照する。CSVのカンマを含むセルは引用符で囲む。実験・解析のcompute_statusはpending/running/partial/failed/complete、保存のstorage_statusはpending/unverified/verified/failedを使う。必要なcheckpointがない場合はcheckpoint_storage_statusをnot_requiredとし、READMEに理由を書く。
+解析索引はanalysis_idごとに1行とし、複数入力はinput_manifest_pathでanalysis_config.jsonを参照する。CSVのカンマを含むセルは引用符で囲む。実験・解析のcompute_statusはpending/queued/running/partial/failed/complete、validation_statusはpending/running/passed/failed/unverified、package_validation_status（実験索引はresult_package_validation_statusとcheckpoint_package_validation_status）はpending/passed/failed/unverified、保存のstorage_statusはpending/unverified/verified/failedを使う。analysis_statusとoverall_statusを含め、判定は[状態管理](STATUS_AND_JOBS.md)に従う。必要なcheckpointがない場合はcheckpoint_package_validation_statusとcheckpoint_storage_statusをnot_requiredとし、READMEに理由を書く。
 
 ## PestControlの既存配置に合わせる場合
 

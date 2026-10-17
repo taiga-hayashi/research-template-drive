@@ -29,3 +29,5 @@
 端末固有のパスは`config/paths.local.json`に記入する。`data_root`はアーカイブ内の`data/`、`output_root`は`analysis/`に対応する。PestControlの旧階層は変更せず、入力のrelative_pathで対応させる。
 
 実験の計算完了、解析の計算完了、アーカイブ検証、Drive保存検証を別々に記録する。結果だけ保存済みでも、必要なcheckpointが未保存なら再現用一式の保存完了とはしない。
+
+状態判定は[STATUS_AND_JOBS.md](STATUS_AND_JOBS.md)を参照する。解析設定schema_version=2ではprotocol・figure_config・job_record_pathも記録する。既存version=1の記録は保持し、新しい項目を未確認のまま推測で補わない。

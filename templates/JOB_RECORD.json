@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "study": "REPLACE_STUDY",
+  "run_ids": [],
+  "analysis_ids": [],
+  "jobs": [
+    {
+      "stage": "compute",
+      "scheduler": null,
+      "job_id": null,
+      "depends_on": [],
+      "status": "pending",
+      "execution_profile": "server",
+      "working_directory": null,
+      "python_executable": null,
+      "command": null,
+      "submitted_at_utc": null,
+      "started_at_utc": null,
+      "ended_at_utc": null,
+      "exit_code": null,
+      "resources": {
+        "cpus": null,
+        "gpus": null,
+        "memory_gb": null
+      },
+      "stdout_path": null,
+      "stderr_path": null
+    }
+  ],
+  "resume": {
+    "parent_run_id": null,
+    "checkpoint_path": null,
+    "checkpoint_sha256": null,
+    "completed_range": null,
+    "remaining_range": null,
+    "command": null,
+    "prechecks": [],
+    "tested": false,
+    "test_evidence": null
+  }
+}

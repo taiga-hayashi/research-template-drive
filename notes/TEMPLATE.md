@@ -3,7 +3,12 @@
 ## 目的
 
 ## 実行
-study / config_hash / run_id / コード版 / コマンド / 保存先
+study / config_hash / run_id / analysis_id / protocolのphase・版 / コード版 / コマンド / 保存先
+
+ジョブ記録と引継ぎファイルへの参照:
+
+## 状態
+計算 / 結果検証 / パッケージ検証 / Drive保存検証 / 解析・図 / 全体の完了
 
 ## 観測結果
 データ・図・Driveパッケージへのリンク、完了/失敗/未測定の範囲
