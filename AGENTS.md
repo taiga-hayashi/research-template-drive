@@ -1,6 +1,6 @@
 # AGENTS.md
 
-この研究の共通管理ルール。最初にREADME.md、docs/DRIVE_WORKFLOW.md、docs/RESEARCH_LAYOUT.mdを読み、対象実験に必要な仕様だけ参照する。.context/INDEX.mdとcore/project.mdを確認し、既存のactive作業記録を引き継ぐ。
+この研究の共通管理ルール。最初にREADME.md、docs/DRIVE_WORKFLOW.md、docs/RESEARCH_LAYOUT.mdを読み、対象実験に必要な仕様だけ参照する。.context/INDEX.mdと.context/core/project.mdを確認し、既存のactive作業記録を引き継ぐ。
 
 - 新規研究はsrc/、experiments/、data/runs/、analysis/、docs/、notes/を役割別に分ける。既存コードの共通機能を再利用する。
 - 1実験1study。結果に影響する条件をconfig_hashで識別し、一意なrun_idで各試行を保存する。既存結果を上書きしない。
@@ -30,3 +30,5 @@
 - 複数段階の作業は.context/work/active/で実施済み・根拠・固定条件・未確認・次の手順を更新する。AGENTS.mdへ作業履歴を蓄積しない。
 - 比較条件と探索/確認/診断の区分はdocs/RESEARCH_PROTOCOL.mdに従う。探索後の確認では条件を固定し、独立性を確認する。
 - 図はdocs/FIGURE_POLICY.mdと研究の共通設定に従う。集計単位・不確実性・評価軸・checkpoint位置を記録する。
+
+- サーバーでの保存対象指定と取得・復元はdocs/PACKAGING_AND_FETCH.mdに従う。pack前にdry-runで対象を確認し、凍結snapshotから梱包する。fetchは必要なpackageと信頼できるSHA-256を指定し、既存runへ上書き展開しない。

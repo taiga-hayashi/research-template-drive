@@ -25,4 +25,4 @@ tmp/**
 !tmp/.gitkeep
 
 # 端末固有の保存先（共有例は追跡）
-/config/paths.local.json
+/config/*.local.json

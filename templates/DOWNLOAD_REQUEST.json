@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "packages": [
+    {
+      "package_id": "REPLACE_UNIQUE_PACKAGE_ID",
+      "drive_url": "REPLACE_DRIVE_REFERENCE",
+      "sha256": "REPLACE_ARCHIVE_SHA256",
+      "source": {
+        "kind": "rclone",
+        "path": "REPLACE_REMOTE:ResearchProject/archive/REPLACE_STUDY/REPLACE_UNIQUE_PACKAGE_ID/artifacts.zip"
+      }
+    }
+  ]
+}

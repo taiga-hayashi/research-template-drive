@@ -5,6 +5,7 @@
 | 作業 | 参照 |
 |---|---|
 | サーバー計算・Drive保存・端末切替 | [運用ガイド](../docs/DRIVE_WORKFLOW.md) |
+| サーバーで梱包・必要データの取得 | [梱包と取得](../docs/PACKAGING_AND_FETCH.md) |
 | 状態確認・ジョブ再開 | [状態とジョブ](../docs/STATUS_AND_JOBS.md) |
 | 比較・探索・確認実験 | [研究・比較手順](../docs/RESEARCH_PROTOCOL.md) |
 | 解析・作図 | [図の設定](../docs/FIGURE_POLICY.md)と対象analysis_config.json |
