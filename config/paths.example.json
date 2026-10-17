@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "mac": {
+      "project_root": "/absolute/path/to/Drive/ResearchProject",
+      "data_root": "/absolute/path/to/local/research-data",
+      "output_root": "/absolute/path/to/Drive/ResearchProject/analysis",
+      "cache_root": "/absolute/path/to/local/research-cache"
+    },
+    "server": {
+      "project_root": "/absolute/path/to/server/ResearchProject",
+      "data_root": "/absolute/path/to/server/research-data",
+      "output_root": "/absolute/path/to/server/research-analysis",
+      "cache_root": "/absolute/path/to/server/research-cache"
+    }
+  }
+}

@@ -1,66 +1,86 @@
-# MacのGoogle Drive同期フォルダで研究する
+# サーバー計算・Macとサーバーでの解析・Drive保存
 
 ## 基本方針
 
-Drive内の研究フォルダを、コード・設定・文書・研究ノート・閲覧用成果物の普段の作業先とする。GitHubは雛形の配布と、必要に応じたコード・管理文書の版管理に使う。研究ごとのGitHubリポジトリ、DVC、uv、Drive APIの認証は必須にしない。
+研究室サーバーで計算し、計算結果をサーバーからGoogle Driveへ直接アップロードする。解析はMacでもサーバーでも同じコードと入力指定を使う。Driveを正式保存先とし、各端末の取得・展開先は作業用とする。
 
-Drive同期は日常の変更を反映し、ZIPは特定の実験時点のコード・設定・結果を固定して残す。両方を併用する。ZIPを編集用フォルダの代わりにしない。
+MacではDrive同期フォルダでコード・文書・閲覧用成果物を直接扱える。サーバーでは同じ版のコードを作業領域に用意する。変更を往復させる場合は差分を確認し、どの版を実行したか記録する。同じファイルを複数端末で同時に書き換えず、双方向の自動上書き同期を前提にしない。
 
-## 置き場所
+## 保存先だけを端末ごとに切り替える
 
-| 対象 | 置き場所と扱い |
+`config/paths.example.json`を`config/paths.local.json`へコピーし、macとserverの実際のパスを記入する。個人のパスはGitへ登録しない。
+
+| 設定 | 用途 |
 |---|---|
-| コード・設定・依存定義 | Drive内の`src/`、`experiments/`などで直接編集 |
-| 管理文書・ノート | Drive内の`docs/`、`notes/`で直接編集 |
-| 図・主要指標・解釈 | Drive内の`analysis/`にPNG/PDF、独立描画したパネル、CSV、MDを保持 |
-| 入力・生データ・checkpoint | 少量ならDrive内の`data/`。大量・高頻度ならDrive外の作業先で生成し、保存パッケージでDriveへ残す |
-| 確定した再現用パッケージ | Drive内の`archive/<study>/<package_id>/` |
-| 仮想環境・キャッシュ・一時ファイル・秘密情報 | Drive外。実行環境や出力先を明示して指定 |
+| project_root | その端末のコード・文書のルート |
+| data_root | 計算データの生成・取得・展開先。アーカイブの`data/`に対応 |
+| output_root | 解析成果物の生成先。`analysis/`に対応 |
+| cache_root | 再生成可能なキャッシュ。Drive外に置く |
 
-`.gitignore`はGitへの登録を制御するもので、Google Driveの同期除外設定にはならない。`cache/`、`tmp/`、`.venv/`をDrive内に作れば、Git管理外でもDrive同期の対象になり得る。既存フォルダを自動で移動・削除せず、新規の生成先をDrive外に設定する。
+端末のパス設定と研究条件・解析条件を分離する。保存先だけの違いはconfig_hashに含めない。端末やbackendの違いが数値結果に影響する場合は、その条件も記録して同じ実験と無条件に扱わない。
 
-## 日常の流れ
+標準ライブラリのみの`src/research_paths.py`で設定を読み込める。以下はパスを確認するだけで、計算・取得・転送・フォルダ作成は行わない。
 
-1. 対象研究のREADMEとAGENTSを読み、今回のstudy・条件・保存先を決める。
-2. ストリーミング利用時は必要なコード・入力をオフライン利用可能にし、ダウンロードが終わってから実行する。同じファイルを複数端末で同時編集・更新しない。
-3. Drive内の共通コード・実験設定を編集する。仮想環境とキャッシュはDrive外を使う。
-4. 一意な`run_id`で実行する。Drive外で生成する場合も`data/runs/<study>/<config_hash>/<run_id>/`の論理的な相対パスを維持し、実際の生成先をmetadataに記録する。パス変更だけで条件hashを変えない。
-5. 実験固有の基準で結果を検証し、Drive内の図・CSV・ノートを更新する。PNG/PDFと必要な独立パネルを保持する。
-6. 実験・チャンク完了時、または長時間計算で原則1時間ごとに、保存済みcheckpointから整合性のあるZIPをDrive外で作り、内部manifestを検証する。
-7. Drive内の新しい`archive/<study>/<package_id>/`へ確定ZIPとREADMEを置く。必要なら`summary.csv`、`overview.pdf`も置く。READMEに解析元runと閲覧用ファイルの対応を記録する。
-8. Drive同期の完了とクラウド上の存在・サイズ・checksumを確認する。SHA-256を確認できない場合はクラウドから再取得して照合する。ローカルの同期フォルダを読み返すだけでクラウド保存済みと判断しない。
-
-Drive内に生データを直接生成する既存運用は維持できる。ただし大量の小ファイルを個別同期しないことを優先する新規実験では、生成先をDrive外へ設定する。ZIPの追加だけでは小ファイル同期の問題は解消しない。Drive外の生成物は検証済みパッケージとしてDriveへ保存するまで「Drive未保存」と記録する。
-
-## 保存パッケージ
-
-```text
-archive/<study>/<package_id>/
-  README.md
-  summary.csv     # 該当する場合
-  overview.pdf    # 該当する場合
-  artifacts.zip
+```sh
+python3 src/research_paths.py --paths config/paths.local.json --profile mac
+python3 src/research_paths.py --paths config/paths.local.json --profile server
 ```
 
-ZIPに対象runの生データ・必要checkpoint・ログ・全図・コード・設定・seed・依存定義を元の相対パスで含める。Drive上で直接読める図があっても、実験時点の図はZIPに固定して残す。ZIPに過去archiveやZIP自身を再帰的に入れない。
+解析スクリプトからは`load_paths(path, profile)`を使い、`paths.data_root / relative_path`で入力を参照する。独自の起動方法に応じてimport経路を設定する。この雛形は既存の解析スクリプトを自動で書き換えない。
 
-Drive外の生成先からパッケージを作る際は、ファイル名だけで集めず、元の論理パスに対応付ける。コードも実行時点のsnapshotを使い、後で編集された最新版で代用しない。変更のない大規模入力は、検証済みのDriveパッケージ・版・checksumを参照し、再現に必要な依存先をREADMEに明記できる場合に限り重複保存を省略する。
+`.gitignore`はDrive同期を除外しない。仮想環境・キャッシュ・一時ファイル・秘密情報はDrive外に置く。Macのストリーミング利用時は必要なコード・入力をオフライン利用可能にしてから実行する。
 
-計算完了、パッケージ検証、Drive保存検証は別々に記録する。Driveの同期状態だけで実験をcompleteにしない。検証前に元データを削除しない。
+## サーバーで計算してDriveへ保存する
+
+1. study・条件・seed・モデル・実行コード版・一意なrun_idを記録して計算する。実行開始時のコード・設定・依存定義を固定し、dirtyなら変更後の全実行時ソースまたは復元可能な差分も保存する。Git commit名とdirty表示だけで版の特定を済ませない。
+2. 完了したseed・run・チャンクごと、長時間計算では原則1時間ごとに、整合性のある保存済みcheckpointから保存パッケージを作る。実行中のファイルをそのまま圧縮しない。
+3. 新規はZIPを標準とするが、既存の`checkpoints.tar`等も保存できる。形式を変えるためだけに再圧縮・再送しない。結果とcheckpointを分ける場合も、同じ実行との対応を記録する。
+4. サーバーでアーカイブ内manifest（相対パス・サイズ・SHA-256、manifest自身を除く）とアーカイブ全体のSHA-256を検証する。必要な生データ・ログ・実行時コード・設定・seed・依存定義・checkpointを保持する。
+5. 新しいpackage_idでDriveへ直接アップロードする。アップロード手段は既存のものを利用する。認証・転送ツールをこのテンプレートが自動設定することはない。
+6. クラウド上の存在・サイズ・checksumを検証する。SHA-256を照合できなければクラウドから再取得して照合する。ローカルの同名ファイルの確認だけで済ませない。検証前にサーバーの元データを削除しない。
+7. `docs/experiment-index.csv`に計算状態と保存検証状態を別々に記録する。結果・checkpointが別の保存先なら両方のpackage_idとリンクを記録する。
+
+DriveでREADME・主要指標CSV・代表図PDFを直接読めるようにし、大量の生データやcheckpointはアーカイブにまとめる。計算時点にまだ存在しない解析図は、後で独立した解析成果として保存する。既存パッケージに追記・上書きしない。
+
+新規標準は`archive/<study>/<package_id>/`。既存プロジェクトでは現在の分類先の下に一意な保存先を設け、元の結果を維持する。ZIP内部は論理的な元の相対パスを保持し、別々の出力先から集めた場合は対応表をREADMEに記載する。依存する入力・コードを別パッケージで参照する場合は版・Driveリンク・checksumを明記する。
+
+## Macでもサーバーでも解析する
+
+1. `docs/experiment-index.csv`から対象run・package・Drive参照を選ぶ。全データを毎回取得せず、必要なものだけ取得する。
+2. 取得したアーカイブ全体と内部manifestを検証し、新しい空の展開先で復元する。標準パッケージの`data/`配下をdata_rootへ対応付け、二重に`data/data/`を作らない。旧形式は既存の階層を保持する。
+3. `templates/ANALYSIS_CONFIG.json`と`templates/ANALYSIS_README.md`を使い、新しいanalysis_idの解析記録を作る。入力run/package・相対パス・checksum、使用モデル・seed・予算・除外理由・集計条件を確定する。テンプレートの未記入値は実行前に埋める。
+4. 同じ解析コード版と設定を用意し、端末に応じたpaths.local.jsonのprofileだけを切り替える。再現コマンド、実際の入出力先、環境・ライブラリ版も記録する。
+5. `output_root/<study>/<analysis_id>/`へREADME、analysis_config.json、csv/、png/、pdf/を生成する。解析コードはsrc/またはscripts/等で共有し、解析結果フォルダごとに実装を複製しない。実行時snapshotは再現用に保存できる。
+6. PNG/PDFと必要な独立パネル、CSV整合性、図の表示を検証する。完了判定後に計算状態をcompleteにする。
+7. MacでDrive内へ直接出力した場合は同期後にクラウド保存を検証する。サーバーで生成した場合はDriveの対応する解析先へアップロードして検証する。大量ファイルは解析単位のアーカイブも使い、閲覧用ファイルは外に置く。
+8. `docs/analysis-index.csv`に入力一覧への参照、実行場所、解析状態、Drive保存検証を記録する。再実行には新しいanalysis_idを付け、前の解析への参照を残す。未完了・失敗も残す。
+
+同じstudy・入力・設定の再解析でもMacとサーバーで同じ出力先を使い回さない。analysis_idはUTC日時と一意suffix等で発行する。run_idは計算試行、package_idは保存単位、analysis_idは解析試行であり、互いに代用しない。
+
+## 索引の使い方
+
+`templates/EXPERIMENT_INDEX.csv`を`docs/experiment-index.csv`へ、`templates/ANALYSIS_INDEX.csv`を`docs/analysis-index.csv`へコピーして使う。実験索引はモデル・seedを含む各runを1行とする。既存run名を変える必要はなく、他の条件列と組み合わせて一意に識別する。同じrunに複数チャンクがある場合はpackageごとに行を追加し、保存済み範囲をnotesに記録する。
+
+解析索引はanalysis_idごとに1行とし、複数入力はinput_manifest_pathでanalysis_config.jsonを参照する。CSVのカンマを含むセルは引用符で囲む。実験・解析のcompute_statusはpending/running/partial/failed/complete、保存のstorage_statusはpending/unverified/verified/failedを使う。必要なcheckpointがない場合はcheckpoint_storage_statusをnot_requiredとし、READMEに理由を書く。
+
+## PestControlの既存配置に合わせる場合
+
+| 役割 | 既存分類 |
+|---|---|
+| 計算結果 | `01_results/<problem>/`以下の既存の符号化・seed・cfg・コード版・モデル・run階層 |
+| checkpoint | `01_results/01_checkpoints/<problem>/`以下の対応する階層 |
+| 解析結果 | `02_analysis/<category>/<problem>/<analysis_id>/` |
+| 解析コード | `03_scripts/`等の既存の共通コード |
+| 記録・索引 | `04_docs/`または`.context/`の既存ルールに合う位置 |
+
+この対応は新規データ・解析の案であり、自動移行ではない。既存のpng/pdf/csvやrun、cfg、コード版名は移動・改名しない。複数の問題設定を混ぜず、同じseedだけで同一実験と判断しない。既存のtar、結果とcheckpointの別保存も索引で対応付ける。
 
 ## GitHubを併用する場合（任意）
 
-新規研究はGitHubからZIPを取得して始められる。GitHubに研究用リポジトリを作る場合も、公開範囲は研究ごとに決める。テンプレートがPublicであることを理由に研究内容もPublicにしない。
+GitHubは雛形配布と必要なコード・管理文書の履歴管理に使う。研究用リポジトリ、DVC、uvは任意。新規研究ではGitHubからZIPを取得して始められる。公開範囲は研究ごとに決める。
 
-Git履歴を使う場合は、Drive外の専用Git作業コピーへコード・管理文書を選んで反映する方法を基本とする。日常編集の基準はDrive内とし、Git側の修正を取り込むときは差分を確認してから反映する。双方向の自動上書き同期は設定しない。
+コード更新はMacとサーバーの差分を確認して反映する。Gitを使わない場合も実行時コードのsnapshotとchecksumで版を固定する。Gitを使う場合もDrive外の作業コピーを利用できる。GitHubへはstaged diffと対象一覧を確認して送信し、生データ、大容量アーカイブ、秘密情報、非公開ノート・文献・図は送らない。
 
-GitHubへの反映時は、staged diffと対象一覧を確認し、生データ、大容量ZIP、秘密情報、非公開の研究ノート・文献・図を送らない。`.gitignore`だけで公開可否を判定しない。`.git`はDriveの通常の成果物保存に含めない。
+## 含まれない自動処理
 
-## 既存プロジェクトへの適用
-
-既存のコード・結果・解析フォルダを維持し、READMEに新規標準との対応を記録する。新しいstudyや保存パッケージから段階的に採用する。既存runの改名・移動・hash再計算、実験条件の変更は行わない。
-
-## 参考
-
-- [Google公式: パソコン版Googleドライブを使用する](https://support.google.com/drive/answer/10838124?hl=ja)
-- [Google公式: ファイルのストリーミングとミラーリング](https://support.google.com/drive/answer/13401938?hl=ja)
+パス設定の読込以外の、サーバー接続、Driveへの認証・転送、ZIP作成・検証、データ取得・展開、条件ハッシュ計算、索引更新、実験・解析実行は未実装。手順と記録雛形を提供し、既存の実行・転送手段と組み合わせて使う。

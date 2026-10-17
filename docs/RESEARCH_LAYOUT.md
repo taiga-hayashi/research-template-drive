@@ -1,6 +1,6 @@
-# Google Drive研究フォルダ標準 v1.1
+# Google Drive研究フォルダ標準 v1.2
 作成日: 2026-10-17
-更新日: 2026-10-17（MacのDrive同期フォルダでの直接作業に対応）
+更新日: 2026-10-17（サーバー計算・Mac/サーバー解析・Drive直接保存に対応）
 
 ## 参照と統合方針
 参照: https://github.com/shunta0213/research-template
@@ -15,7 +15,7 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
 
 ## 作業領域の標準構成
 
-標準の日常作業先はMacのGoogle Drive同期フォルダ。コード・設定・文書・ノート・閲覧用成果物を直接編集する。大量出力・仮想環境・キャッシュの置き場所は[DRIVE_WORKFLOW.md](DRIVE_WORKFLOW.md)に従う。GitHubへの研究用リポジトリ作成は任意。
+計算は研究室サーバー、解析はMacまたはサーバーで行う。正式保存先はDrive。端末別保存先、直接アップロード、解析入力の取得・展開、索引は[DRIVE_WORKFLOW.md](DRIVE_WORKFLOW.md)に従う。GitHubへの研究用リポジトリ作成は任意。
 
 ```text
 <project>/
@@ -23,7 +23,10 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
   AGENTS.md
   src/                       # 共通実装を一元管理
   experiments/<study>/       # 実験固有の計算本体・設定・実行入口
-  analysis/<study>/          # 集計・作図コード
+  config/paths.example.json  # 端末別の保存先設定例
+  analysis/<study>/<analysis_id>/ # 解析結果と記録
+    README.md
+    analysis_config.json
     png/panels/
     pdf/panels/
     csv/
@@ -48,7 +51,7 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
 ```
 
 空フォルダは必要になった時点で作成する。共通コードはsrc/を参照し、実験ごとに複製しない。
-experiments/にはコード・設定、data/runs/には計算出力、analysis/には集計・可視化を置く。
+experiments/にはコード・設定、data/runs/には計算出力、analysis/には解析ごとの成果物を置き、解析コードはsrc/やscripts/で共有する。
 実験ID（study）で3か所を対応させ、READMEからリンクする。PNG/PDFの相対名を一致させる。
 必要なSVGも保持する。個別パネルは独立して描画し、切り抜きで代替しない。
 
@@ -70,8 +73,8 @@ experiments/にはコード・設定、data/runs/には計算出力、analysis/�
     artifacts.zip
 ```
 
-コード・設定・文書・閲覧用成果物はDrive内で直接扱い、実験時点のsnapshotもartifacts.zipに保存する。
-大量の生データや高頻度のcheckpointはDrive外の作業先で生成し、ZIPでまとめて保存する。
+Macではコード・文書・閲覧用成果物をDrive内で直接扱える。サーバーでは同じ版のコードと設定を用意する。実行時のsnapshotを保存パッケージに固定する。
+大量の生データや高頻度のcheckpointはDrive外の作業先で生成し、アーカイブでまとめてサーバーから直接保存する。
 少量の結果はDrive内に直接生成してもよい。ZIP化しても元ファイルの自動同期は止まらない。
 .gitignoreはDrive同期を制御しない。仮想環境・キャッシュ・一時ファイル・秘密情報の生成先はDrive外に設定する。
 artifacts.zip内部では上記の論理的な相対パスを保持し、実際の生成先はmetadataに記録する。
@@ -89,20 +92,21 @@ DriveのREADMEにはstudy、条件hash、run ID、package ID、状態、保存�
   同じ条件の再試行も別のrun_idで保存し、成功・失敗を上書きしない。
 - run_id: UTC日時（秒以上）と一意suffix。package_idも同様に一意にする。
 - metadata.json: 実行コマンド、開始終了日時、環境・依存版、Git commitとdirty状態
-  （Gitがない場合はコードsnapshotのchecksum）、入力参照、実行状態を記録する。
+  （Gitがない場合はコードsnapshotのchecksum）、入力参照、実行状態を記録する。dirtyの場合も実行時ソースまたは復元可能な差分を保存する。
+- analysis_id: 解析試行ごとの一意ID。入力run/package・checksum、選択・除外・集計条件、解析コード版、再現コマンドをanalysis_config.jsonとREADMEに記録する。出力先はanalysis/<study>/<analysis_id>/とし、再実行は新IDにする。
 - status.json: running/partial/failed/completeと検証内容を記録。
   raw結果の整合性・必要seed/件数・軌跡長・必須再現用ファイルを検証してからcompleteを記録する。
   結果は一時ファイルからの確定書き込みを使い、図の更新やoutputファイルの存在だけで完了扱いにしない。
 - 失敗・未完了runも記録して比較対象の範囲を明示する。未測定値を補完・捏造しない。
 
 ## 圧縮・転送・復元
-1. 実験単位または完了チャンク単位で、変更分だけ保存パッケージをDrive外で作り、検証後にDrive内へ配置する。
+1. 実験単位または完了チャンク単位で、変更分だけ保存パッケージをDrive外で作り、検証後にサーバーからDriveへ直接アップロードする。
 2. 長時間計算は原則1時間ごと、またはチャンク完了時に、整合性のある途中snapshotを保存する。
-3. ZIP内にmanifest.json（相対パス・サイズ・SHA-256）を含める。manifest自体は自己hash対象にしない。
+3. 新規アーカイブはZIPを標準とする。既存tar等も維持し、再圧縮のためだけに再送しない。アーカイブ内にmanifest.json（相対パス・サイズ・SHA-256）を含める。manifest自体は自己hash対象にしない。
 4. READMEにZIPのSHA-256、条件、含むrun、partial/complete、入力参照、再現・復元手順を記載する。
 5. .venv、.git、__pycache__、cache、tmp、秘密情報、過去archiveを除外。
    失敗ログ・生データ・必要なcheckpoint・環境定義は保持する。
-6. Drive同期の完了を待ち、クラウド上の存在・サイズ・取得可能checksumを確認し、SHA-256比較ができなければクラウドから再取得して照合する。
+6. 直接アップロードまたはDrive同期の完了を待ち、クラウド上の存在・サイズ・取得可能checksumを確認し、SHA-256比較ができなければクラウドから再取得して照合する。
    同期フォルダ内のローカルファイルを読み返すだけでクラウド保存を検証済みにしない。
    元データを検証前に削除しない。検証不能なら未検証と報告する。
 7. 復元は新しい空の作業先へ行い、ZIPと内部manifestを検証する。既存runに上書き展開しない。
@@ -113,7 +117,7 @@ SSD上の入力はパスだけでなくchecksum・版・取得元を記録する
 Drive保存済みと表現しない。全結果のDrive保存を求められている場合は分割パッケージで保存する。
 
 ## DVCを導入するとき
-現状はZIPとDrive connectorを標準とする。DVCの認証は未設定であり、この雛形はDVC実行環境を含まない。
+保存は新規ZIPを標準とし、既存tar等も許容する。転送はサーバーで利用している既存手段を使い、特定のDrive connectorを前提にしない。DVCの認証は未設定であり、この雛形はDVC実行環境を含まない。
 導入時は閲覧用archive/とDVC専用remoteを分け、圧縮済みパッケージを追跡する。
 同じ大容量データを両方式で二重保存しない。DVC pointer・Git版・Drive参照の対応を索引に残す。
 GitHubへのpushや公開、認証設定は別の明示的な依頼に従う。
@@ -122,7 +126,7 @@ GitHubへのpushや公開、認証設定は別の明示的な依頼に従う。
 | 新規標準 | PestControl | Intern_Fujitsu |
 |---|---|---|
 | src/, experiments/ | 03_scripts/、関連コードリポジトリ | src/、experimet/、code/など既存配置 |
-| data/runs/ | 01_results/、01_checkpoints/ | 各実験のjson/、results/ |
+| data/runs/ | 01_results/、01_results/01_checkpoints/ | 各実験のjson/、results/ |
 | analysis/ | 02_analysis/内の既存分類 | 各実験のpng/pdf/svg/md/ |
 | docs/, notes/ | 04_docs/、.context/work/ | report/、md/、既存研究記録 |
 | archive/ | 既存分類先内の一意な実行ID | 既存実験保存先内の一意な実行ID |

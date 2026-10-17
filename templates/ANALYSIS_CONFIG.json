@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "study": "REPLACE_STUDY",
+  "analysis_id": "REPLACE_UNIQUE_ANALYSIS_ID",
+  "inputs": [
+    {
+      "run_id": "REPLACE_RUN_ID",
+      "config_hash": "REPLACE_CONFIG_HASH",
+      "result_package_id": "REPLACE_RESULT_PACKAGE_ID",
+      "checkpoint_package_id": null,
+      "relative_path": "runs/REPLACE_STUDY/REPLACE_CONFIG_HASH/REPLACE_RUN_ID",
+      "drive_url": "REPLACE_DRIVE_URL",
+      "archive_sha256": "REPLACE_SHA256",
+      "model": "REPLACE_MODEL",
+      "seed": null,
+      "code_version": "REPLACE_CODE_VERSION",
+      "checkpoint_relative_path": null,
+      "checkpoint_drive_url": null,
+      "checkpoint_archive_sha256": null
+    }
+  ],
+  "selection": {
+    "models": [],
+    "seeds": [],
+    "evaluation_budget": null,
+    "include_failed_runs": true,
+    "exclusions": []
+  },
+  "aggregation": {
+    "unit": null,
+    "center": null,
+    "uncertainty": null,
+    "missing_policy": "report_without_imputation"
+  },
+  "analysis_code": {
+    "commit": null,
+    "dirty": null,
+    "source_snapshot_sha256": null
+  },
+  "command": null,
+  "environment_file": null
+}
