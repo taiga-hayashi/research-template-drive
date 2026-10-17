@@ -1,5 +1,6 @@
-# Google Drive研究フォルダ標準 v1
+# Google Drive研究フォルダ標準 v1.1
 作成日: 2026-10-17
+更新日: 2026-10-17（MacのDrive同期フォルダでの直接作業に対応）
 
 ## 参照と統合方針
 参照: https://github.com/shunta0213/research-template
@@ -13,6 +14,9 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
 適用範囲: 新規研究フォルダ。既存プロジェクトの移動・改名・既存ハッシュの変更は行わない。
 
 ## 作業領域の標準構成
+
+標準の日常作業先はMacのGoogle Drive同期フォルダ。コード・設定・文書・ノート・閲覧用成果物を直接編集する。大量出力・仮想環境・キャッシュの置き場所は[DRIVE_WORKFLOW.md](DRIVE_WORKFLOW.md)に従う。GitHubへの研究用リポジトリ作成は任意。
+
 ```text
 <project>/
   README.md
@@ -53,6 +57,9 @@ experiments/にはコード・設定、data/runs/には計算出力、analysis/�
 <project>/
   README.md                  # 目的・索引・実験一覧・正式保存先
   AGENTS.md                  # エージェント向け必須ルール
+  src/、experiments/          # 日常編集するコード・設定
+  analysis/                  # 図・主要指標・解析コード
+  data/                      # 少量の入力・結果。大量出力は下記の方式で保存
   docs/                      # 人間が直接読む共通仕様
   notes/                     # 日付ノート
   refs/                      # 必要な文献
@@ -63,7 +70,11 @@ experiments/にはコード・設定、data/runs/には計算出力、analysis/�
     artifacts.zip
 ```
 
-Driveに作業領域の全小ファイルを展開して同期しない。artifacts.zipの内部に上記の相対パスを保持する。
+コード・設定・文書・閲覧用成果物はDrive内で直接扱い、実験時点のsnapshotもartifacts.zipに保存する。
+大量の生データや高頻度のcheckpointはDrive外の作業先で生成し、ZIPでまとめて保存する。
+少量の結果はDrive内に直接生成してもよい。ZIP化しても元ファイルの自動同期は止まらない。
+.gitignoreはDrive同期を制御しない。仮想環境・キャッシュ・一時ファイル・秘密情報の生成先はDrive外に設定する。
+artifacts.zip内部では上記の論理的な相対パスを保持し、実際の生成先はmetadataに記録する。
 ZIPには対象実験のデータ・解析・コード・設定と、それらが依存する共通src/や環境定義も含める。
 検証済みの別コードパッケージを参照する場合はDriveリンク・版・checksumを明記する。
 ローカルにarchive/を同時に保持していても、ZIP内部に過去のarchive/やZIP自体を再帰的に含めない。
@@ -85,13 +96,14 @@ DriveのREADMEにはstudy、条件hash、run ID、package ID、状態、保存�
 - 失敗・未完了runも記録して比較対象の範囲を明示する。未測定値を補完・捏造しない。
 
 ## 圧縮・転送・復元
-1. 実験単位または完了チャンク単位で、変更分だけ保存パッケージを作る。
+1. 実験単位または完了チャンク単位で、変更分だけ保存パッケージをDrive外で作り、検証後にDrive内へ配置する。
 2. 長時間計算は原則1時間ごと、またはチャンク完了時に、整合性のある途中snapshotを保存する。
 3. ZIP内にmanifest.json（相対パス・サイズ・SHA-256）を含める。manifest自体は自己hash対象にしない。
 4. READMEにZIPのSHA-256、条件、含むrun、partial/complete、入力参照、再現・復元手順を記載する。
 5. .venv、.git、__pycache__、cache、tmp、秘密情報、過去archiveを除外。
    失敗ログ・生データ・必要なcheckpoint・環境定義は保持する。
-6. Driveの存在・サイズ・取得可能checksumを確認し、SHA-256比較ができなければ再取得して照合する。
+6. Drive同期の完了を待ち、クラウド上の存在・サイズ・取得可能checksumを確認し、SHA-256比較ができなければクラウドから再取得して照合する。
+   同期フォルダ内のローカルファイルを読み返すだけでクラウド保存を検証済みにしない。
    元データを検証前に削除しない。検証不能なら未検証と報告する。
 7. 復元は新しい空の作業先へ行い、ZIPと内部manifestを検証する。既存runに上書き展開しない。
 8. 大きすぎる場合はstudy・条件・run群など意味のある単位に分割し、依存関係をREADMEに記載する。

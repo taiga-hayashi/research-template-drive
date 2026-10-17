@@ -1,3 +1,4 @@
+# Gitへの登録だけを制御する。Google Drive同期の除外にはならない。
 .venv/
 __pycache__/
 *.py[cod]
