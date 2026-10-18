@@ -21,4 +21,4 @@
 - 観測結果:
 - 解釈と限界:
 
-解析状態とDrive保存検証は別々に記録する。既存analysis_idに上書きせず、再実行は新しいanalysis_idを使い、元の解析への参照を残す。
+解析状態とDrive保存検証は別々に記録する。再実行は同じ分類のpdf/・png/・csv/を更新し、新しいanalysis_idを設定と索引に記録する。更新前の実行情報・ソース・出力checksumをdocs/records/analysis_runs/の記録ファイルへ保持し、旧索引の参照先も更新する。plot.ipynbとplot.pyをセットにし、Notebookの各図にMarkdownで読み方を記載する。詳細は[解析・作図の運用](../docs/ANALYSIS_WORKFLOW.md)。

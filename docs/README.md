@@ -27,3 +27,5 @@ analysis-index.csv       # 雛形から作成
 ```
 
 [全フォルダの案内](FOLDER_GUIDE.md)を参照する。実際の研究固有ルールはAGENTS.mdと対象studyの仕様に従う。
+
+- [解析・作図の運用](ANALYSIS_WORKFLOW.md): Notebook/Pythonのセット、図の読み方、固定した出力先と実行記録。

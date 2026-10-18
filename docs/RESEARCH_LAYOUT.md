@@ -26,7 +26,7 @@ README.md、AGENTS.md、docs/development.md、scripts/README.mdを参照して�
   src/                       # 共通実装を一元管理
   experiments/<study>/       # 実験固有の計算本体・設定・実行入口
   config/paths.example.json  # 端末別の保存先設定例
-  analysis/<study>/<analysis_id>/ # 解析結果と記録
+  analysis/<study>/<category>/ # 解析結果と記録
     README.md
     analysis_config.json
     png/panels/
@@ -97,7 +97,7 @@ DriveのREADMEにはstudy、条件hash、run ID、package ID、状態、保存�
 - run_id / package_id / analysis_id: 短いIDを使い、日時や条件を名前に連結しない。[NAMING.md](NAMING.md)に従い、重複を確認する。
 - metadata.json: 実行コマンド、開始終了日時、環境・依存版、Git commitとdirty状態
   （Gitがない場合はコードsnapshotのchecksum）、入力参照、実行状態を記録する。dirtyの場合も実行時ソースまたは復元可能な差分を保存する。
-- analysis_id: 解析試行ごとの一意ID。入力run/package・checksum、選択・除外・集計条件、解析コード版、再現コマンドをanalysis_config.jsonとREADMEに記録する。出力先はanalysis/<study>/<analysis_id>/とし、再実行は新IDにする。
+- analysis_id: 解析試行ごとの一意ID。入力run/package・checksum、選択・除外・集計条件、解析コード版、再現コマンドをanalysis_config.jsonとREADMEに記録する。出力先はanalysis/<study>/<category>/直下のpdf/・png/・csv/とし、再実行は同じ生成ファイルを更新する。新しいanalysis_idは設定・索引に記録し、更新前の実行情報・ソース・checksumをdocs/records/analysis_runs/の記録ファイルに保持する。Notebook/Pythonのセットと図の説明は[ANALYSIS_WORKFLOW.md](ANALYSIS_WORKFLOW.md)に従う。
 - status.json: [RUN_STATUS.json](../templates/RUN_STATUS.json)を使い、計算・結果検証・パッケージ検証・Drive保存・解析・全体の状態を別々に記録する。
   raw結果の整合性・必要seed/件数・軌跡長・必須再現用ファイルを検証し、必要な保存と解析も確認してからoverall_status=completeを記録する。
   結果は一時ファイルからの確定書き込みを使い、図の更新やoutputファイルの存在だけで完了扱いにしない。

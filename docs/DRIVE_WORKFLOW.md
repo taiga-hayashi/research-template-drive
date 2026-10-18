@@ -62,12 +62,12 @@ DriveでREADME・主要指標CSV・代表図PDFを直接読めるようにし、
 2. 取得したアーカイブ全体と内部manifestを検証し、新しい空の展開先で復元する。標準パッケージの`data/`配下をdata_rootへ対応付け、二重に`data/data/`を作らない。fetchツールでは専用の`data_root/_packages/<package_id>/`以下へ展開するため、その下の実際の相対パスを入力設定に記録する。旧形式は既存の階層を保持する。
 3. `templates/ANALYSIS_CONFIG.json`と`templates/ANALYSIS_README.md`を使い、新しいanalysis_idの解析記録を作る。入力run/package・相対パス・checksum、使用モデル・seed・予算・除外理由・集計条件を確定する。テンプレートの未記入値は実行前に埋める。
 4. 同じ解析コード版と設定を用意し、端末に応じたpaths.local.jsonのprofileだけを切り替える。再現コマンド、実際の入出力先、環境・ライブラリ版も記録する。
-5. `output_root/<study>/<analysis_id>/`へREADME、analysis_config.json、csv/、png/、pdf/を生成する。解析コードはsrc/またはscripts/等で共有し、解析結果フォルダごとに実装を複製しない。実行時snapshotは再現用に保存できる。
+5. `output_root/<study>/<category>/`へREADME、plot.ipynbとplot.py、analysis_config.json、results.md、csv/、png/、pdf/を用意する。再実行は同じ生成ファイルを更新し、版番号フォルダを作らない。更新前の実行情報・ソース・checksumをdocs/records/analysis_runs/の記録ファイルへ保持する。[ANALYSIS_WORKFLOW.md](ANALYSIS_WORKFLOW.md)に従いNotebookを先頭から実行し、図の説明と出力を保存する。解析コードはsrc/またはscripts/等で共有し、解析結果フォルダごとに実装を複製しない。実行時snapshotは再現用に保存できる。
 6. PNG/PDFと必要な独立パネル、CSV整合性、図の表示を検証する。解析実行の終了をcompute_status、検証結果をvalidation_statusへ別々に記録する。全体の完了は必要な保存検証後に判定する。
 7. MacでDrive内へ直接出力した場合は同期後にクラウド保存を検証する。サーバーで生成した場合はDriveの対応する解析先へアップロードして検証する。大量ファイルは解析単位のアーカイブも使い、閲覧用ファイルは外に置く。
 8. `docs/analysis-index.csv`に入力一覧への参照、実行場所、解析状態、Drive保存検証を記録する。再実行には新しいanalysis_idを付け、前の解析への参照を残す。未完了・失敗も残す。
 
-同じstudy・入力・設定の再解析でもMacとサーバーで同じ出力先を使い回さない。analysis_idはa-＋ランダム16進12桁等の短いIDで発行し、重複を確認する。詳細は[NAMING.md](NAMING.md)を参照する。run_idは計算試行、package_idは保存単位、analysis_idは解析試行であり、互いに代用しない。
+同じ解析先をMacとサーバーから同時に更新しない。出力先は分類ごとの固定配置とし、analysis_idは設定と索引で試行を識別する。analysis_idはa-＋ランダム16進12桁等の短いIDで発行し、重複を確認する。詳細は[NAMING.md](NAMING.md)を参照する。run_idは計算試行、package_idは保存単位、analysis_idは解析試行であり、互いに代用しない。
 
 ## 長時間計算・引継ぎ・比較と図
 
@@ -87,7 +87,7 @@ DriveでREADME・主要指標CSV・代表図PDFを直接読めるようにし、
 |---|---|
 | 計算結果 | `01_results/<problem>/`以下の既存の符号化・seed・cfg・コード版・モデル・run階層 |
 | checkpoint | `01_results/01_checkpoints/<problem>/`以下の対応する階層 |
-| 解析結果 | `02_analysis/<category>/<problem>/<analysis_id>/` |
+| 解析結果 | `02_analysis/<category>/<problem>/` |
 | 解析コード | `03_scripts/`等の既存の共通コード |
 | 記録・索引 | `04_docs/`または`.context/`の既存ルールに合う位置 |
 

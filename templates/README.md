@@ -22,7 +22,7 @@ RUN_STATUS.json、JOB_RECORD.json、PACKAGE_SPEC.json、DOWNLOAD_REQUEST.json、
 PACKAGE_SPEC.json → config/package.local.json
 DOWNLOAD_REQUEST.json → config/downloads.local.json
 EXPERIMENT_INDEX.csv → docs/experiment-index.csv
-ANALYSIS_CONFIG.json → analysis/<study>/<analysis_id>/analysis_config.json
+ANALYSIS_CONFIG.json → analysis/<study>/<category>/analysis_config.json
 ```
 
 [全フォルダの案内](../docs/FOLDER_GUIDE.md)を参照する。実際の研究固有ルールはAGENTS.mdと対象studyの仕様に従う。

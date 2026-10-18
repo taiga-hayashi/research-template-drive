@@ -66,3 +66,7 @@ run/package/analysisのIDを自動発行する処理とconfig_hashの生成処�
 .gitignoreはGitの登録規則でありDrive同期除外にはならない。data/、archive/、cache/、tmp/のREADMEは説明文書としてGitへ含めるが、データ本体の扱いは変更しない。Driveを正式保存先とし、サーバー出力・端末の復元コピー・クラウド保存の検証状態を区別する。非公開ノート・文献・図・個人設定は、Gitの除外規則だけに頼らず公開前に確認する。
 
 詳細は[運用](DRIVE_WORKFLOW.md)、[梱包と取得](PACKAGING_AND_FETCH.md)、[状態管理](STATUS_AND_JOBS.md)、[図](FIGURE_POLICY.md)を参照する。
+
+## 各フォルダの説明と解析出力
+
+各フォルダには役割、置くもの・置かないもの、入出力と利用方法をREADME.mdで記載する。解析分類ではplot.ipynbとplot.pyをセットにし、pdf/・png/・csv/を直下で更新する。analysis_idはフォルダ名ではなく設定と索引で識別する。詳しくは[解析・作図の運用](ANALYSIS_WORKFLOW.md)。

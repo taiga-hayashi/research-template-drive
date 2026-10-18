@@ -12,7 +12,7 @@ Google Driveを正式保存先として、実験・解析・研究記録を再�
 4. [実験索引](templates/EXPERIMENT_INDEX.csv)・[解析索引](templates/ANALYSIS_INDEX.csv)を`docs/`へコピーします。
 5. サーバーで計算し、完了したrun・チャンク単位で再現用パッケージをDriveへ直接アップロードして検証します。結果とcheckpointの対応を実験索引に残します。
 6. Macまたはサーバーで必要データを取得・検証し、同じ解析コードと[解析設定](templates/ANALYSIS_CONFIG.json)を使います。端末ごとに切り替えるのは保存先設定です。
-7. 新しいanalysis_idへ図・CSV・[解析記録](templates/ANALYSIS_README.md)を保存し、Drive保存検証後に解析索引を更新します。
+7. 各解析分類の固定フォルダへ図・CSV・[解析記録](templates/ANALYSIS_README.md)を保存し、Drive保存検証後に解析索引を更新します。
 
 Pythonは各端末のDrive外にある既存のローカル仮想環境で実行します。Macとサーバーで環境本体を共有せず、依存定義と実際のPython・ライブラリ版を記録します。Drive内に`.venv`を作成しません。
 
@@ -42,7 +42,7 @@ Pythonは各端末のDrive外にある既存のローカル仮想環境で実行
 |src/|共通実装|
 |experiments/|実験固有のコード・設定|
 |data/inputs/、data/runs/|入力・生データ・checkpoint（Git管理外）|
-|analysis/|`<study>/<analysis_id>/`ごとの解析結果。PNG/PDFと独立パネルを保持|
+|analysis/|`<study>/<category>/`ごとの解析結果。PNG/PDFと独立パネルを保持|
 |config/|端末別の保存先設定例と研究の共通図設定。個人設定はGit管理外|
 |.context/|研究固有の基本情報と作業引継ぎ|
 |docs/|管理ガイド・入出力仕様・判断ログ|
@@ -73,3 +73,7 @@ DVC、uv、ジョブ管理ツールは任意です。
 - 環境構築:
 - 実験索引: docs/experiment-index.csv
 - 解析索引: docs/analysis-index.csv
+
+## 解析・作図の入口
+
+各分類に `plot.ipynb` と `plot.py` をセットで置き、Notebookには各図の見方と実行結果を残します。出力は分類直下の `pdf/`・`png/`・`csv/` を更新し、版番号フォルダを増やしません。詳しくは [解析・作図の運用](docs/ANALYSIS_WORKFLOW.md) を参照してください。

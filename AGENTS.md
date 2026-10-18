@@ -4,14 +4,14 @@
 
 - 配置先を決める前にdocs/FOLDER_GUIDE.mdと対象フォルダのREADME.mdを読み、役割と既存の研究固有ルールを確認する。新しいstudy・run・解析・保存先にも目的・入出力・版・検証状態のREADMEを残す。
 - 新規研究はsrc/、experiments/、data/runs/、analysis/、docs/、notes/を役割別に分ける。既存コードの共通機能を再利用する。
-- 1実験1study。結果に影響する条件をconfig_hashで識別し、一意なrun_idで各試行を保存する。既存結果を上書きしない。
+- 1実験1study。結果に影響する条件をconfig_hashで識別し、一意なrun_idで各試行を保存する。生データ・入力原本・実験run・checkpointは上書きしない。再生成可能な解析の図・表は固定配置で更新する。
 - 入力、設定、seed、実行コード版、コマンド、環境、ログ、必要なcheckpointを記録し、失敗・未完了も残す。
 - 計算・結果検証・パッケージ検証・Drive保存・解析を別々に記録する。compute_status=completeだけで研究全体を完了としない。overall_statusはdocs/STATUS_AND_JOBS.mdの基準に従う。
 - 公平な比較では問題・入力・seed・初期データ・評価予算等を揃える。差異を記録し、未測定値や結果を捏造しない。
 - 図はPNG/PDFを同名・対応する相対パスで保存し、必要な個別パネルも独立描画して保持する。SVG等の追加要件も維持する。
 - 計算は研究室サーバー、解析はMacまたはサーバーで行う。Driveを正式保存先とし、Macの同期フォルダも利用する。GitHub・DVC導入は任意。
 - 解析コードと研究条件を共通化し、端末の入出力先はconfig/paths.local.jsonで分離する。保存先だけでconfig_hashを変えない。
-- 解析ごとに一意なanalysis_idを付け、入力run/package・checksum・集計条件・コード版・コマンド・環境を記録する。同じ解析先をMacとサーバーで上書きしない。
+- 解析ごとに一意なanalysis_idを付け、入力run/package・checksum・集計条件・コード版・コマンド・環境を記録する。同じ解析先をMacとサーバーで同時に更新しない。
 - 実験索引と解析索引に計算状態とDrive保存検証を別々に残す。結果とcheckpointが別保存なら両方の対応を記録する。
 - Python実行は各端末のDrive外にある既存のローカル仮想環境を使う。MacはMac側、サーバーはサーバー側の環境を使い、Drive内に.venvを作らない。既存環境を勝手に作り直さず、.venv本体を同期・共有・転送しない。環境の場所が不明なら実行前に確認する。
 - .gitignoreはDrive同期を除外しない。仮想環境・キャッシュ・一時ファイル・秘密情報はDrive外に置く。大量の生データ・高頻度checkpointはDrive外で生成し、アーカイブでサーバーからDriveへ直接保存する。既存の直接出力は無断で移動しない。
@@ -35,3 +35,10 @@
 - サーバーでの保存対象指定と取得・復元はdocs/PACKAGING_AND_FETCH.mdに従う。pack前にdry-runで対象を確認し、凍結snapshotから梱包する。fetchは必要なpackageと信頼できるSHA-256を指定し、既存runへ上書き展開しない。
 
 - 新規フォルダ名はdocs/NAMING.mdに従い1要素24文字以内を基本とする。条件・日時・seed・コード版を名前へ詰め込まず、短いIDと完全hashの対応を記録する。既存フォルダや保存済みIDを自動改名しない。
+
+## 解析・作図の実行形式
+
+- docs/ANALYSIS_WORKFLOW.mdに従い、各解析分類にplot.ipynbとplot.pyを2つセットで用意する。同じ入力・条件・共通処理を使い、共通実装はsrc/またはscripts/へ置く。
+- Notebookを先頭から実行し、図・主要な検証結果をセル出力に保存する。各図のMarkdownに軸・単位、色・線・点・誤差、集計単位、比較の手順、良し悪しの方向、解釈の限界を記載する。
+- 既存図のコピーと実データからの再作図を区別する。再作図と学習・checkpointからの指標再計算の実施範囲を記録する。
+- 出力はanalysis/<study>/<category>/直下のpdf/・png/・csv/とし、vNNやanalysis_idの出力フォルダを作らない。再実行では同じ生成ファイルを更新し、旧実行情報・ソース・checksumをdocs/records/analysis_runs/の記録ファイルへ保持する。analysis_idは設定と索引で識別する。
